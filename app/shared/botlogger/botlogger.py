@@ -97,11 +97,12 @@ class Botlogger:
             load_dotenv()
 
         envs_necessarias = [
-            "AUTOMACAO_ID_PARA_EXECUCAO",
             "TOKEN_BOTLOGGER_OFICIAL",
             "HOST_BOTLOGGER_OFICIAL",
             "URL_BITRIX",
         ]
+        if not self.automation_id:
+            envs_necessarias.append("AUTOMACAO_ID_PARA_EXECUCAO")
 
         for env in envs_necessarias:
             if not os.getenv(env):
