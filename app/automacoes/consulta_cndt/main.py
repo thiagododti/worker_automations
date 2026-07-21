@@ -30,15 +30,20 @@ class ConsultaCNDTInfoSimples:
             botlogger.inicio_etapa(identificacao=self.payload.cnpj or self.payload.cpf)
 
             response = requests.get(self.url, params=self.params, timeout=30)
+            dados = response.json()
 
             if self.payload.cnpj:
                 print(f"Consulta realizada para CNPJ: {self.payload.cnpj}")
             elif self.payload.cpf:
                 print(f"Consulta realizada para CPF: {self.payload.cpf}")
-
-            botlogger.fim_etapa()
+            if dados.get("code") == 200:
+                botlogger.fim_etapa()
+            else:
+                botlogger.alerta_etapa(
+                    f"Consulta retornou código {dados.get('code')} Consulta não foi realizada com sucesso."
+                )
             botlogger.fim_execucao()
-            return response.json()
+            return dados
 
         except requests.RequestException as e:
             if self.payload.cnpj:
