@@ -16,7 +16,7 @@ class Envelope(BaseModel):
 
     execucao_id: str
     automacao_id: int
-    empresa_id: int | None = None
+    empresa_cnpj: str
     usuario_id: int | None = None
     criado_em: datetime
     origem: str

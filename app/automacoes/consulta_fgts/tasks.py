@@ -33,6 +33,7 @@ def consulta_fgts_task(payload: dict):
         {
             "execucao_id": envelope.execucao_id,
             "automacao_id": envelope.automacao_id,
+            "empresa_cnpj": envelope.empresa_cnpj,
             "criado_em": datetime.now(),
             "origem": "worker_consulta_fgts",
             "ip_origem": "192.168.74.10",

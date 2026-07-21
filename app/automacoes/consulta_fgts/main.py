@@ -1,5 +1,6 @@
 class ConsultaFgtsInfoSimples:
     from app.automacoes.consulta_fgts.schema import EnvelopeConsultaFgts
+    from app.shared.botlogger import Botlogger
 
     def __init__(self, payload: EnvelopeConsultaFgts):
         import os
@@ -23,6 +24,14 @@ class ConsultaFgtsInfoSimples:
         import requests
 
         try:
+            botlogger = self.Botlogger(
+                empresa=self.payload.empresa_cnpj,
+                automacao_id=19,
+            )
+            botlogger.inicio_execucao()
+            botlogger.inicio_etapa(
+                identificacao=self.payload.cnpj or self.payload.cpf or "consultando_api"
+            )
             response = requests.get(self.url, params=self.params, timeout=30)
 
             if self.payload.cnpj:
@@ -30,11 +39,20 @@ class ConsultaFgtsInfoSimples:
             elif self.payload.cpf:
                 print(f"Consulta realizada para CPF: {self.payload.cpf}")
 
+            botlogger.fim_etapa()
+            botlogger.fim_execucao()
             return response.json()
 
         except requests.RequestException as e:
             if self.payload.cnpj:
                 print(f"Erro ao consultar cnd fgts {self.payload.cnpj}: {e}")
+                botlogger.erro_etapa(
+                    f"Erro ao consultar cnd fgts {self.payload.cnpj}: {e}"
+                )
             elif self.payload.cpf:
                 print(f"Erro ao consultar cnd fgts {self.payload.cpf}: {e}")
+                botlogger.erro_etapa(
+                    f"Erro ao consultar cnd fgts {self.payload.cpf}: {e}"
+                )
+            botlogger.erro_execucao(f"Execução com erro: {e}")
             return {"error": "Erro ao conectar com a API.", "data": str(e)}
