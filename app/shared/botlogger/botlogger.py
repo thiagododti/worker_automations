@@ -1,17 +1,22 @@
 import requests
 import time
 from datetime import datetime
-from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
+import random
+from dotenv import load_dotenv, find_dotenv
 import os
 
 
 class Botlogger:
     def __init__(self, empresa: str, envio_manual=False, automacao_id=None):
+        self.automation_id_worker = automacao_id
         self.envio_manual = envio_manual
         self.botlogger_version = self._get_botlogger_version()
         self._env_check()
         # Recebimento de parametros
-        automation_id_env = automacao_id or os.getenv("AUTOMACAO_ID_PARA_EXECUCAO", 0)
+        automation_id_env = self.automation_id_worker or os.getenv(
+            "AUTOMACAO_ID_PARA_EXECUCAO", 0
+        )
         self.automation_id = int(automation_id_env) if automation_id_env else 0
         self.empresa = empresa
         # URL base e headers comuns para todas as requisições
@@ -101,7 +106,7 @@ class Botlogger:
             "HOST_BOTLOGGER_OFICIAL",
             "URL_BITRIX",
         ]
-        if not self.automation_id:
+        if not self.automation_id_worker:
             envs_necessarias.append("AUTOMACAO_ID_PARA_EXECUCAO")
 
         for env in envs_necessarias:
