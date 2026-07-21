@@ -1,0 +1,2 @@
+# Dependencias especificas desta automacao (alem das do requirements.txt raiz,
+# que o Dockerfile ja instala automaticamente para todas as automacoes).
