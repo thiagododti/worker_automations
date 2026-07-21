@@ -14,7 +14,8 @@ services:
     restart: unless-stopped
 
     networks:
-      - automacoes
+      - rede_padrao
 
 networks:
-  automacoes:
+  rede_padrao:
+    external: true
